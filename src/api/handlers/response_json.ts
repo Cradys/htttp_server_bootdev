@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export function responseWithError(code: number, message: string, res: Response) {
+export function respondWithError(code: number, message: string, res: Response) {
   respondWithJSON(res, code, { error: message });
 }
 

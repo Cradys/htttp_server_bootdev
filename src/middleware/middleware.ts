@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
-import { responseWithError } from "../api/handlers/response_json.js";
+import { respondWithError } from "../api/handlers/response_json.js";
 import { BadRequest, NotFound, Unauthorized, Forbidden } from "../api/error_classes.js";
 
 export function middlewareLogResponses(req: Request, res: Response, next: NextFunction) {
@@ -47,5 +47,5 @@ export function errorHandler(err: Error,
     console.log(err.message)
   }
 
-  responseWithError(statusCode, message, res)
+  respondWithError(statusCode, message, res)
 }

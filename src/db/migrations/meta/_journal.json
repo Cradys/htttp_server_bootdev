@@ -8,6 +8,20 @@
       "when": 1776357328240,
       "tag": "0000_woozy_thing",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776416481402,
+      "tag": "0001_windy_guardsmen",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776611951562,
+      "tag": "0002_early_havok",
+      "breakpoints": true
     }
   ]
 }
