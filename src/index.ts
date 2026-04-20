@@ -1,8 +1,8 @@
 import express from "express";
 import { handlerReadiness, handlerRequestHits, handlerResetRequestHits } from "./api/handlers/handlers.js";
 import { handlerCreateUser, handlerUserLogin } from "./api/handlers/users.js";
-import { middlewareCountRequest, middlewareLogResponses } from "./middleware/middleware.js";
-import { errorHandler } from "./middleware/middleware.js";
+import { middlewareCountRequest, middlewareLogResponses } from "./api/middleware.js";
+import { errorHandler } from "./api/middleware.js";
 import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";

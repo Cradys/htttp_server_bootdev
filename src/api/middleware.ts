@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { config } from "../config.js";
-import { respondWithError } from "../api/handlers/response_json.js";
-import { BadRequest, NotFound, Unauthorized, Forbidden } from "../api/error_classes.js";
+import { respondWithError } from "./handlers/response_json.js";
+import { BadRequest, NotFound, Unauthorized, Forbidden } from "./error_classes.js";
 
 export function middlewareLogResponses(req: Request, res: Response, next: NextFunction) {
   res.on('finish', () => {
