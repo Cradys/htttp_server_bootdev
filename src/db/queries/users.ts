@@ -12,7 +12,7 @@ export async function createUser(user: NewUser) {
 }
 
 export async function deleteUsers() {
-  await db.delete(users)
+  await db.delete(users);
 }
 
 export async function getUser(email: string) {

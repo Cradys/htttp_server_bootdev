@@ -1,13 +1,14 @@
 import express from "express";
-import { handlerReadiness, handlerRequestHits, handlerResetRequestHits } from "./api/handlers/handlers.js";
-import { handlerCreateUser, handlerUserLogin } from "./api/handlers/users.js";
-import { middlewareCountRequest, middlewareLogResponses } from "./api/middleware.js";
-import { errorHandler } from "./api/middleware.js";
 import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "./config.js";
+import { handlerReadiness, handlerRequestHits, handlerResetRequestHits } from "./api/handlers/handlers.js";
+import { handlerCreateUser } from "./api/handlers/users.js";
+import { middlewareCountRequest, middlewareLogResponses } from "./api/middleware.js";
+import { errorHandler } from "./api/middleware.js";
 import { handlerCreateChirps, handlerListChirps, handlerOneChirps } from "./api/handlers/chirps.js";
+import { handlerRefreshToken, handlerRevokeToken, handlerUserLogin } from "./api/auth.js";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -30,7 +31,11 @@ app.get("/api/chirps/:chirpId", handlerOneChirps)
 app.post("/api/chirps", handlerCreateChirps)
 
 app.post("/api/users", handlerCreateUser)
+
+
 app.post("/api/login", handlerUserLogin)
+app.post("/api/refresh", handlerRefreshToken)
+app.post("/api/revoke", handlerRevokeToken)
 
 app.use(errorHandler)
 

@@ -19,3 +19,7 @@ export async function listChirps(chirpId?: string) {
     .orderBy(chirps.createdAt)
   return result
 }
+
+export async function deleteChirps() {
+  await db.delete(chirps)
+}
