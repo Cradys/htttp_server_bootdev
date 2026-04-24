@@ -4,11 +4,12 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { config } from "./config.js";
 import { handlerReadiness, handlerRequestHits, handlerResetRequestHits } from "./api/handlers/handlers.js";
-import { handlerCreateUser } from "./api/handlers/users.js";
+import { handlerCreateUser, handlerUpdateUser } from "./api/handlers/users.js";
 import { middlewareCountRequest, middlewareLogResponses } from "./api/middleware.js";
 import { errorHandler } from "./api/middleware.js";
-import { handlerCreateChirps, handlerListChirps, handlerOneChirps } from "./api/handlers/chirps.js";
+import { handlerCreateChirps, handlerDeleteChirps, handlerListChirps, handlerOneChirps } from "./api/handlers/chirps.js";
 import { handlerRefreshToken, handlerRevokeToken, handlerUserLogin } from "./api/auth.js";
+import { handlerChirpyRed } from "./api/handlers/chirpy_red.js";
 
 
 const migrationClient = postgres(config.db.url, { max: 1 });
@@ -29,13 +30,17 @@ app.post("/admin/reset", handlerResetRequestHits)
 app.get("/api/chirps", handlerListChirps)
 app.get("/api/chirps/:chirpId", handlerOneChirps)
 app.post("/api/chirps", handlerCreateChirps)
+app.delete("/api/chirps/:chirpId", handlerDeleteChirps)
 
 app.post("/api/users", handlerCreateUser)
+app.put("/api/users", handlerUpdateUser)
 
 
 app.post("/api/login", handlerUserLogin)
 app.post("/api/refresh", handlerRefreshToken)
 app.post("/api/revoke", handlerRevokeToken)
+
+app.post("/api/polka/webhooks", handlerChirpyRed)
 
 app.use(errorHandler)
 

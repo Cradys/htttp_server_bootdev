@@ -4,6 +4,7 @@ type Config = {
   api: APIConfig;
   db: DBConfig;
   jwt: JWTConfig;
+  webhook: Webhooks;
 };
 
 type APIConfig = {
@@ -22,6 +23,10 @@ type JWTConfig = {
   secret: string;
   issuer: string;
 };
+
+type Webhooks = {
+  polkaKey: string
+}
 
 process.loadEnvFile();
 
@@ -51,5 +56,8 @@ export const config: Config = {
     defaultDuration: 60 * 60, // 1 hour in seconds
     secret: envOrThrow("JWT_SECRET"),
     issuer: "chirpy",
+  },
+  webhook: {
+    polkaKey: envOrThrow("POLKA_KEY")
   }
 };

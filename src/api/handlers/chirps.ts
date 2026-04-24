@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from "express"
-import { BadRequest, NotFound } from "../error_classes.js"
-import { createChirps, listChirps } from "../../db/queries/chirps.js"
+import { BadRequest, Forbidden, NotFound } from "../error_classes.js"
+import { createChirps, deleteChirpsById, getChirpByIdAndUserId, getChirpByUserId, listChirps } from "../../db/queries/chirps.js"
 import { respondWithError, respondWithJSON } from "./response_json.js"
-import { getBearerToken, validateJWT } from "../auth.js"
-import { config } from "../../config.js"
-import { NewChirps } from "../../db/schema.js"
+import { getBearerToken, handlerAuth, validateJWT } from "../auth.js"
+import { chirps, NewChirps } from "../../db/schema.js"
 
 
 export async function handlerCreateChirps(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -25,7 +24,7 @@ export async function handlerCreateChirps(req: Request, res: Response, next: Nex
     }
 
     const token = getBearerToken(req)
-    const userID = validateJWT(token, config.jwt.secret)
+    const userID = validateJWT(token)
 
     validChirp = {
       body: findProfane(reqBody.body),
@@ -42,7 +41,33 @@ export async function handlerCreateChirps(req: Request, res: Response, next: Nex
 }
 
 export async function handlerListChirps(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const result = await listChirps()
+  let authorId = ""
+  let sort = ""
+  let result
+  if (typeof req.query.authorId === "string") {
+    authorId = req.query.authorId 
+    result = await getChirpByUserId(authorId)
+  } else {
+    result = await listChirps()
+
+    if (typeof req.query.sort === "string") {
+    sort = req.query.sort
+    
+    if (sort === "desc") {
+      result.sort((a, b) => {
+        if (a.createdAt > b.createdAt) {
+          return -1
+        }
+        if (a.createdAt < b.createdAt) {
+          return 1
+        }
+        return 0
+      })
+    }
+  } 
+  }
+
+  
   respondWithJSON(res, 200, result)
 } 
 
@@ -58,6 +83,30 @@ export async function handlerOneChirps(req: Request, res: Response, next: NextFu
     respondWithJSON(res, 200, result[0])
   
   } catch(err) {
+    next(err)
+  }
+  
+}
+
+export async function handlerDeleteChirps(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const user = await handlerAuth(req)
+    const chirpIdToDelete = req.params.chirpId as string
+
+    const [userChirpFromDB] = await listChirps(chirpIdToDelete)
+
+    if (!userChirpFromDB) {
+      throw new NotFound("Chirp not found")
+    } 
+
+    if (user.id != userChirpFromDB.userId) {
+      throw new Forbidden("User does not have this chirp")
+    }
+
+    await deleteChirpsById(chirpIdToDelete)
+
+    respondWithJSON(res, 204)
+  } catch (err) {
     next(err)
   }
   

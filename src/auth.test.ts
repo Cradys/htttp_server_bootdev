@@ -28,22 +28,22 @@ describe("JWT Functions", () => {
   let validToken: string;
 
   beforeAll(() => {
-    validToken = makeJWT(userID, 3600, secret);
+    validToken = makeJWT(userID, 3600);
   });
 
   it("should validate a valid token", () => {
-    const result = validateJWT(validToken, secret);
+    const result = validateJWT(validToken);
     expect(result).toBe(userID);
   });
 
   it("should throw an error for an invalid token string", () => {
-    expect(() => validateJWT("invalid.token.string", secret)).toThrow(
+    expect(() => validateJWT("invalid.token.string")).toThrow(
       Unauthorized,
     );
   });
 
   it("should throw an error when the token is signed with a wrong secret", () => {
-    expect(() => validateJWT(validToken, wrongSecret)).toThrow(
+    expect(() => validateJWT(validToken)).toThrow(
       Unauthorized,
     );
   });
